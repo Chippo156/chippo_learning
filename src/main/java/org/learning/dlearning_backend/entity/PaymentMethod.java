@@ -1,12 +1,12 @@
 package org.learning.dlearning_backend.entity;
 
-import com.spring.dlearning.common.PaymentMethodName;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.learning.dlearning_backend.common.PaymentMethodName;
 
 @Getter
 @Setter

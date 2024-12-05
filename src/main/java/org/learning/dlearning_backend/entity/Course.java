@@ -77,9 +77,6 @@ public class Course extends AbstractEntity<Long> {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     List<Payment> payments;
-
-
-
     @PrePersist
     private void prePersist() {
         if (this.quantity == null) {

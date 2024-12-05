@@ -1,9 +1,9 @@
 package org.learning.dlearning_backend.entity;
 
-import com.spring.dlearning.common.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.learning.dlearning_backend.common.PaymentStatus;
 
 import java.math.BigDecimal;
 
