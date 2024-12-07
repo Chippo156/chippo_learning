@@ -26,7 +26,6 @@ public class UserController {
     public ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request,
                                                 @RequestParam String otp) {
         var result = userService.createUser(request, otp);
-
         return ApiResponse.<UserResponse>builder()
                 .code(HttpStatus.CREATED.value())
                 .result(result)
