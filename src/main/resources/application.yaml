@@ -21,8 +21,37 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: vovannghiahiep1562003@gmail.com
+    password: zuvzquhzgbnmvqqi
+
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  kafka:
+    bootstrap-servers: localhost:9094
+    consumer:
+      group-id: my-consumer-group
+      auto-offset-reset: earliest
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 jwt:
   secretKey: 90c85b588e8d468d45cf5a70a5517dc6507a0655d7ea0664f6eb70dd4d76394e
   valid-duration: 86400
   refresh-duration: 86400
+
+cloudinary:
+  cloud_name: dqnwxejgy
+  api_key: 486184719822545
+  api_secret: XOtBNDM_B6EzTK9TUQ9ET1CBDHA
