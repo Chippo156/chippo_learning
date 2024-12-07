@@ -1,10 +1,10 @@
-package org.learning.dlearning_backend.repository.specification;
 
+package org.learning.dlearning_backend.repository.specification;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import jakarta.validation.constraints.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.learning.dlearning_backend.entity.Course;
 import org.springframework.data.jpa.domain.Specification;
 
