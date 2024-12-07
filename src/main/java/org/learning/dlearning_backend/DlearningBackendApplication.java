@@ -9,7 +9,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAsync
 @EnableScheduling
 public class DlearningBackendApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(DlearningBackendApplication.class, args);
     }

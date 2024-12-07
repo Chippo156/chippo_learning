@@ -34,7 +34,6 @@ public class SecurityUtils {
         }
         return null;
     }
-
     public static String generateOtp(){
         StringBuilder otp = new StringBuilder();
         for(int i = 0; i < 6 ; i++){

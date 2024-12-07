@@ -20,6 +20,9 @@ public class CustomJwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try{
+       //log content type ra cho tôi
+            // Log content type and other request details for debuggin
+
            filterChain.doFilter(request, response);
         }
         catch (ExpiredTokenException exception){
