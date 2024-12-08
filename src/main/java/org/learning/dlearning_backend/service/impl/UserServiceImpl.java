@@ -42,7 +42,7 @@ import static org.learning.dlearning_backend.utils.SecurityUtils.generateOtp;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl {
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
     RoleRepository roleRepository;
@@ -51,12 +51,10 @@ public class UserServiceImpl implements UserService {
     EmailService emailService;
     KafkaTemplate<String, Object> kafkaTemplate;
 
-    @Override
     public boolean findByEmail(EmailRequest request) {
         return userRepository.existsByEmail(request.getEmail());
     }
 
-    @Override
     public UserResponse createUser(UserCreationRequest request, String otp) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new AppException(ErrorCode.USER_EXISTED);
@@ -86,7 +84,6 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserResponse(user);
     }
 
-    @Override
     public void sendOtpRegister(EmailRequest request) throws MessagingException, UnsupportedEncodingException {
 
         String otp = generateOtp();
