@@ -14,7 +14,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonIgnoreProperties({"user", "course"})
-public class Favorite extends AbstractEntity<Long>{
+public class Favorite extends AbstractEntity<Integer>{
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
