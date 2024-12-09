@@ -54,7 +54,7 @@ public class TeacherService {
                 .description(user.getDescription())
                 .build();
     }
-    public PageResponse<StudentResponse> etStudentsByPurchasedCourses(int page, int size) {
+    public PageResponse<StudentResponse> getStudentsByPurchasedCourses(int page, int size) {
         String email = SecurityUtils.getCurrentUserLogin()
                 .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
 
