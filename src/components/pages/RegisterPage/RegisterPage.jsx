@@ -1,25 +1,31 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { RegisterForm } from "./components/RegisterForm";
+import {
+  checkUserExists,
+  registerUser,
+  sendOtpRegister,
+} from "../../../service/UserService";
 
 export const RegisterPage = () => {
   useEffect(() => {
     document.title = "Register page";
-  });
+  }, []);
 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    firstname: "",
-    lastname: "",
+    firstName: "",
+    lastName: "",
     dob: "",
     otp: "",
   });
-  const [formError, setFormError] = useState({
+  const [formErrors, setFormError] = useState({
     email: "",
     password: "",
-    firstname: "",
-    lastname: "",
+    firstName: "",
+    lastName: "",
     dob: "",
     otp: "",
   });
@@ -32,14 +38,17 @@ export const RegisterPage = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    setFormError({ ...formError, [name]: value ? "" : formErrors[name] });
+    setFormError({ ...formErrors, [name]: value ? "" : formErrors[name] });
   };
 
   //Xử lý lỗi khi để trống
   const handleInputBlur = (e) => {
     const { name, value } = e.target;
     if (!value) {
-      setFormError({ ...formError, [name]: "This field cannot be left bank" });
+      setFormError({
+        ...formErrors,
+        [name]: "This field cannot be left blank",
+      });
     }
   };
   const handleRegisterSubmit = async (e) => {
@@ -75,8 +84,8 @@ export const RegisterPage = () => {
       const data = await registerUser(formData.otp, {
         email: formData.email,
         password: formData.password,
-        firstname: formData.firstname,
-        lastname: formData.lastname,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
         dob: formData.dob,
       });
       if (data.result) {

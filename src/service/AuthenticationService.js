@@ -3,7 +3,7 @@ import axios from "../utils/CustomizeAxios";
 
 export const login = async (email, password) => {
   try {
-    const response = await axios.post("/api/v1/auth/login", {
+    const response = await axios.post("api/v1/auth/token", {
       email,
       password,
     });
@@ -24,9 +24,10 @@ export const introspect = async () => {
     if (!token) {
       throw new Error("Token is missing");
     }
-    const response = await axios.post("/api/v1/auth/introspect", {
+    const response = await axios.post("api/v1/auth/introspect", {
       token: token,
     });
+
     if (response.data && response.data.result) {
       return response.data.result;
     } else {
@@ -40,7 +41,7 @@ export const introspect = async () => {
 };
 
 export const logout = async (token) => {
-  const response = await axios.post("/api/v1/auth/logout", {
+  const response = await axios.post("api/v1/auth/logout", {
     token: token,
   });
   return response;

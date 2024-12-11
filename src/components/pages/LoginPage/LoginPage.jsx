@@ -31,7 +31,7 @@ export const LoginPage = () => {
       introspect(token)
         .then((data) => {
           if (data.valid) {
-            navigate("/home");
+            navigate("/register");
           }
         })
         .catch((error) => {
@@ -59,12 +59,12 @@ export const LoginPage = () => {
         introspect()
           .then((introspectData) => {
             if (introspectData && introspectData.valid) {
-              if (role === "USER") {
-                navigate("/home");
-              } else if (role === "ADMIN") {
-                navigate("/admin");
-              } else if (role === "TEACHER") {
-                navigate("/manager-courses");
+              if (introspectData.scope === "USER") {
+                navigate("/register");
+              } else if (introspectData.scope === "ADMIN") {
+                // navigate("/admin");
+              } else if (introspectData.scope === "TEACHER") {
+                // navigate("/manager-courses");
               }
             } else {
               throw new Error("Invalid token.");

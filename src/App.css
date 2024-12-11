@@ -947,7 +947,7 @@ pre code {
   padding-left: 0;
 }
 
-.col-1,
+/* .col-1,
 .col-2,
 .col-3,
 .col-4,
@@ -1021,9 +1021,9 @@ pre code {
   width: 100%;
   padding-right: 15px;
   padding-left: 15px;
-}
+} */
 
-.col {
+/* .col {
   flex-basis: 0;
   flex-grow: 1;
   max-width: 100%;
@@ -2075,7 +2075,7 @@ pre code {
   .offset-xl-11 {
     margin-left: 91.66667%;
   }
-}
+} */
 
 .table {
   width: 100%;
@@ -7770,9 +7770,9 @@ button.bg-dark:focus {
   justify-content: flex-end !important;
 }
 
-.justify-content-center {
+/* .justify-content-center {
   justify-content: center !important;
-}
+} */
 
 .justify-content-between {
   justify-content: space-between !important;
