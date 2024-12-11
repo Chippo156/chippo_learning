@@ -34,7 +34,24 @@ public class SecurityConfiguration {
             "/api/v1/auth/logout",
             "/api/v1/auth/introspect",
             "/api/v1/auth/refresh",
-            "/api/v1/send-otp-register"
+            "/api/v1/auth/outbound/authentication",
+            "/api/v1/create-password",
+            "/api/v1/send-otp",
+            "/api/v1/reset-password",
+            "/api/v1/verify-otp",
+            "/api/v1/check-exists-user",
+            "/api/v1/send-otp-register",
+            "/api/v1/courses/**",
+            "/api/v1/course/{id}",
+            "/api/v1/info-course/{id}",
+            "/ws/**",
+            "/upload/**",
+            "/api/v1/courses-review/{courseId}",
+            "/api/v1/payment/vn-pay-callback",
+            "/api/v1/payment/vn-pay/**",
+            "/api/v1/get-ads-active",
+            "/api/v1/info-teacher/**",
+            "/api/v1/search-title/**"
     };
 
     @Bean

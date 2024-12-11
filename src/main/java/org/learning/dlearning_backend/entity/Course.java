@@ -5,8 +5,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.learning.dlearning_backend.common.CourseLevel;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -19,7 +24,11 @@ import java.util.Set;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "wishlists"})
-public class Course extends AbstractEntity<Long> {
+public class Course {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    Long id;
 
     @Column(name = "title", nullable = false)
     String title;
@@ -72,6 +81,22 @@ public class Course extends AbstractEntity<Long> {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     List<Payment> payments;
+
+    @Column(name = "created_by")
+    @CreatedBy
+    String createdBy;
+
+    @Column(name = "updated_by")
+    @LastModifiedBy
+    String updateBy;
+
+    @Column(name = "create_at")
+    @CreationTimestamp
+    LocalDateTime createdAt;
+
+    @Column(name = "update_at")
+    @UpdateTimestamp
+    LocalDateTime updatedAt;
     @PrePersist
     private void prePersist() {
         if (this.quantity == null) {

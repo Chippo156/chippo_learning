@@ -55,3 +55,6 @@ cloudinary:
   cloud_name: dqnwxejgy
   api_key: 486184719822545
   api_secret: XOtBNDM_B6EzTK9TUQ9ET1CBDHA
+
+upload-file:
+  base-uri: file:/path/to/upload/

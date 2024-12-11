@@ -22,7 +22,6 @@ public class CustomJwtAuthFilter extends OncePerRequestFilter {
         try{
        //log content type ra cho tôi
             // Log content type and other request details for debuggin
-
            filterChain.doFilter(request, response);
         }
         catch (ExpiredTokenException exception){

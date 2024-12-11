@@ -39,7 +39,14 @@ public class UserController {
                 .result(result)
                 .build();
     }
-
+    @PostMapping("/check-exists-user")
+    ApiResponse<Boolean> checkExistsUser(@RequestBody EmailRequest request){
+        var result = userService.findByEmail(request);
+        return ApiResponse.<Boolean>builder()
+                .code(HttpStatus.OK.value())
+                .result(result)
+                .build();
+    }
     @PostMapping("/send-otp-register")
     ApiResponse<Void> sendOtpRegister(@RequestBody EmailRequest request)
             throws MessagingException, UnsupportedEncodingException {

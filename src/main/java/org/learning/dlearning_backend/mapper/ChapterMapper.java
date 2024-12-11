@@ -10,9 +10,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ChapterMapper {
 
-    @Mapping(source = "courseId", target = "course.id")
-    @Mapping(source = "chapterName", target = "chapterName")
-    @Mapping(source = "description", target = "description")
+    @Mapping(target = "chapterName", source = "chapterName")
+    @Mapping(target = "description", source = "description")
+    @Mapping(target = "course.id", source = "courseId")
     Chapter toChapter(CreationChapterRequest request);
 
     @Mapping(target = "lessonId", source = "id")
