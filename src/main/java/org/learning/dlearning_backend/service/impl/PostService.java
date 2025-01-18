@@ -66,7 +66,7 @@ public class PostService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = PageRequest.of(page-1, size, sort);
         Page<Post> posts = postRepository.findAll(spec, pageable);
 
         List<PostResponse> postResponses = posts.getContent().stream()

@@ -1,16 +1,15 @@
 package org.learning.dlearning_backend.controller;
 
 import com.turkraft.springfilter.boot.Filter;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.learning.dlearning_backend.dto.request.BuyCourseRequest;
 import org.learning.dlearning_backend.dto.request.CourseCreationRequest;
-import org.learning.dlearning_backend.dto.response.ApiResponse;
-import org.learning.dlearning_backend.dto.response.CourseCreationResponse;
-import org.learning.dlearning_backend.dto.response.CourseResponse;
-import org.learning.dlearning_backend.dto.response.PageResponse;
+import org.learning.dlearning_backend.dto.response.*;
 import org.learning.dlearning_backend.elasticsearch.CourseDocument;
 import org.learning.dlearning_backend.entity.Course;
 import org.learning.dlearning_backend.service.impl.CourseService;
@@ -74,5 +73,11 @@ public class CourseController {
                 .result(courseService.findByTitle(title))
                 .build();
     }
-
+    @PostMapping("/buy-course")
+    ApiResponse<BuyCourseResponse> buyCourse(@RequestBody @Valid BuyCourseRequest request) {
+        return ApiResponse.<BuyCourseResponse>builder()
+                .code(HttpStatus.OK.value())
+                .result(courseService.buyCourse(request))
+                .build();
+    }
 }

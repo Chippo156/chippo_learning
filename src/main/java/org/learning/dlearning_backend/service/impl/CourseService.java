@@ -6,22 +6,24 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.learning.dlearning_backend.common.PaymentMethodName;
+import org.learning.dlearning_backend.common.PaymentStatus;
 import org.learning.dlearning_backend.constant.PredefinedRole;
+import org.learning.dlearning_backend.dto.request.BuyCourseRequest;
 import org.learning.dlearning_backend.dto.request.CourseCreationRequest;
+import org.learning.dlearning_backend.dto.response.BuyCourseResponse;
 import org.learning.dlearning_backend.dto.response.CourseCreationResponse;
 import org.learning.dlearning_backend.dto.response.CourseResponse;
 import org.learning.dlearning_backend.dto.response.PageResponse;
 import org.learning.dlearning_backend.elasticsearch.CourseDocument;
 //import org.learning.dlearning_backend.elasticsearch.DocumentCourseRepository;
 import org.learning.dlearning_backend.elasticsearch.DocumentCourseRepository;
-import org.learning.dlearning_backend.entity.Course;
-import org.learning.dlearning_backend.entity.Review;
-import org.learning.dlearning_backend.entity.User;
+import org.learning.dlearning_backend.entity.*;
 import org.learning.dlearning_backend.exception.AppException;
 import org.learning.dlearning_backend.exception.ErrorCode;
 import org.learning.dlearning_backend.mapper.CourseMapper;
-import org.learning.dlearning_backend.repository.CourseRepository;
-import org.learning.dlearning_backend.repository.UserRepository;
+import org.learning.dlearning_backend.mapper.EnrollmentMapper;
+import org.learning.dlearning_backend.repository.*;
 import org.learning.dlearning_backend.repository.specification.CourseSpecificationBuilder;
 import org.learning.dlearning_backend.repository.specification.SpecSearchCriteria;
 import org.learning.dlearning_backend.utils.SecurityUtils;
@@ -46,9 +48,13 @@ import java.util.Objects;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class CourseService {
+    private final PaymentRepository paymentRepository;
+    private final PaymentMethodRepository paymentMethodRepository;
+    private final EnrollmentRepository enrollmentRepository;
     UserRepository userRepository;
     CourseRepository courseRepository;
     CourseMapper courseMapper;
+    EnrollmentMapper enrollmentMapper;
     CloudinaryService cloudinaryService;
 
         DocumentCourseRepository documentCourseRepository;
@@ -168,4 +174,60 @@ public class CourseService {
         return documentCourseRepository.findByTitle(title);
     }
 
+    @Transactional
+    @PreAuthorize("isAuthenticated()")
+    public BuyCourseResponse buyCourse(BuyCourseRequest request){
+        String email = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AppException(ErrorCode.EMAIL_INVALID));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        Course course = courseRepository.findById(request.getCourseId())
+                .orElseThrow(() -> new AppException(ErrorCode.COURSE_NOT_EXISTED));
+
+        if(enrollmentRepository.existsByUserAndCourse(user,course)){
+            throw new AppException(ErrorCode.COURSE_ALREADY_PURCHASED);
+        }
+        log.warn(String.valueOf(user));
+        log.warn(String.valueOf(user.getPoints()));
+        Long pointsCourse = Objects.requireNonNull(course.getPoints(), "Course points cannot be null");
+        log.warn(String.valueOf(course.getPoints()));
+
+        Long pointsUser = Long.parseLong(String.valueOf(user.getPoints()));
+        log.warn(String.valueOf(pointsUser));
+
+        if(pointsUser < pointsCourse){
+            throw new AppException(ErrorCode.BUY_COURSE_INVALID);
+        }
+        user.setPoints(pointsUser - pointsCourse);
+        course.setQuantity(course.getQuantity() + 1);
+        userRepository.save(user);
+
+        User authorCourse = course.getAuthor();
+        authorCourse.setPoints(authorCourse.getPoints() + pointsCourse);
+
+        PaymentMethod paymentMethod = paymentMethodRepository.findByMethodName(PaymentMethodName.BANK_TRANSFER)
+                .orElseGet(() -> paymentMethodRepository.save(PaymentMethod.builder()
+                        .methodName(PaymentMethodName.BANK_TRANSFER)
+                        .build()));
+
+        Payment payment = Payment.builder()
+                .user(user)
+                .course(course)
+                .paymentMethod(paymentMethod)
+                .price(BigDecimal.valueOf(pointsCourse * 100))
+                .points(BigDecimal.valueOf(pointsUser))
+                .status(PaymentStatus.COMPLETED)
+                .build();
+
+        paymentRepository.save(payment);
+
+        Enrollment enrollment = Enrollment.builder()
+                .user(user)
+                .course(course)
+                .purchased(true)
+                .build();
+
+        enrollmentRepository.save(enrollment);
+        return enrollmentMapper.toBuyCourseResponse(enrollment);
+    }
 }
