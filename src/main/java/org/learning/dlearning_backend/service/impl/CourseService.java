@@ -11,16 +11,14 @@ import org.learning.dlearning_backend.common.PaymentStatus;
 import org.learning.dlearning_backend.constant.PredefinedRole;
 import org.learning.dlearning_backend.dto.request.BuyCourseRequest;
 import org.learning.dlearning_backend.dto.request.CourseCreationRequest;
-import org.learning.dlearning_backend.dto.response.BuyCourseResponse;
-import org.learning.dlearning_backend.dto.response.CourseCreationResponse;
-import org.learning.dlearning_backend.dto.response.CourseResponse;
-import org.learning.dlearning_backend.dto.response.PageResponse;
+import org.learning.dlearning_backend.dto.response.*;
 import org.learning.dlearning_backend.elasticsearch.CourseDocument;
 //import org.learning.dlearning_backend.elasticsearch.DocumentCourseRepository;
 import org.learning.dlearning_backend.elasticsearch.DocumentCourseRepository;
 import org.learning.dlearning_backend.entity.*;
 import org.learning.dlearning_backend.exception.AppException;
 import org.learning.dlearning_backend.exception.ErrorCode;
+import org.learning.dlearning_backend.mapper.CourseChapterAndLessonMapper;
 import org.learning.dlearning_backend.mapper.CourseMapper;
 import org.learning.dlearning_backend.mapper.EnrollmentMapper;
 import org.learning.dlearning_backend.repository.*;
@@ -39,9 +37,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -56,6 +53,7 @@ public class CourseService {
     CourseMapper courseMapper;
     EnrollmentMapper enrollmentMapper;
     CloudinaryService cloudinaryService;
+    CourseChapterAndLessonMapper courseChapterAndLessonMapper;
 
         DocumentCourseRepository documentCourseRepository;
     public PageResponse<CourseResponse> getAllCourses(Specification<Course> spec, int page, int size) {
@@ -229,5 +227,31 @@ public class CourseService {
 
         enrollmentRepository.save(enrollment);
         return enrollmentMapper.toBuyCourseResponse(enrollment);
+    }
+    public CourseChapterResponse getAllInfoCourse (Long courseId){
+
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new AppException(ErrorCode.COURSE_NOT_EXISTED));
+
+        Long totalLessons = course.getChapters().stream()
+                .mapToLong(chapter -> chapter.getLessons().size()).sum();
+
+        CourseChapterResponse courseLessonResponse =  courseChapterAndLessonMapper
+                .getCourserChapterAndLesson(courseId);
+
+        Set<CourseChapterResponse.ChapterDto> sortedChapter = courseLessonResponse.getChapters().stream()
+                .sorted(Comparator.comparing(CourseChapterResponse.ChapterDto::getChapterId))
+                .peek(chapter -> {
+                    Set<CourseChapterResponse.LessonDto> sortedLessons = chapter.getLessonDto().stream()
+                            .sorted(Comparator.comparing(CourseChapterResponse.LessonDto::getLessonId))
+                            .collect(Collectors.toCollection(LinkedHashSet::new));
+                    chapter.setLessonDto(sortedLessons);
+                })
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        courseLessonResponse.setTotalLesson(totalLessons);
+        courseLessonResponse.setChapters(sortedChapter);
+
+        return courseLessonResponse;
     }
 }

@@ -80,4 +80,11 @@ public class CourseController {
                 .result(courseService.buyCourse(request))
                 .build();
     }
+    @GetMapping("/info-course/{id}")
+    ApiResponse<CourseChapterResponse> infoCourse(@PathVariable @Min(1) Long id){
+        return ApiResponse.<CourseChapterResponse>builder()
+                .code(HttpStatus.OK.value())
+                .result(courseService.getAllInfoCourse(id))
+                .build();
+    }
 }
